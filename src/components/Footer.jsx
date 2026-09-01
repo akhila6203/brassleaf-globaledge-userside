@@ -79,7 +79,7 @@ export default function Footer() {
                 +91 99999 99999
               </a>
             </div>
-            <div className="flex gap-3">
+            {/* <div className="flex gap-3">
               <Mail size={19} className="mt-0.5 shrink-0 text-[#D9A537]" />
               <a
                 href="mailto:info@uniforms.com"
@@ -87,7 +87,7 @@ export default function Footer() {
               >
                 info@uniforms.com
               </a>
-            </div>
+            </div> */}
             <div className="flex gap-3">
               <MapPin size={19} className="mt-0.5 shrink-0 text-[#D9A537]" />
               <span className="leading-6">6-3-666/B, Pillar No. #1118, Panjagutta, Hyderabad – 500082, Opp. Nims Hospital.</span>
