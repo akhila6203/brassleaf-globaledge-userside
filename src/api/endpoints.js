@@ -4,22 +4,22 @@ const API_ENDPOINTS = {
   ===================================================== */
 
   PRODUCTS:
-    "/products",
+    "/products/public",
 
   PRODUCT_BY_ID:
     (id) =>
-      `/products/${id}`,
+      `/products/public/${id}`,
 
   /* =====================================================
      CATEGORIES - PUBLIC
   ===================================================== */
 
   CATEGORIES:
-    "/categories",
+    "/categories/public",
 
   CATEGORY_BY_ID:
     (id) =>
-      `/categories/${id}`,
+      `/categories/public/${id}`,
 
   /* =====================================================
      CUSTOMERS

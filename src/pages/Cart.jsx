@@ -17,6 +17,8 @@ import {
 } from "react";
 
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
+import axiosClient from "../api/axiosClient";
 
 import {
   getDefaultAddress,
@@ -32,6 +34,7 @@ const EMPTY_SHIPPING = {
 
 export default function Cart() {
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
 
   const {
     cart,
@@ -104,7 +107,7 @@ export default function Cart() {
      SAVE SHIPPING ADDRESS
   ========================================= */
 
-  const saveAddress = () => {
+  const saveAddress = async () => {
     const existing =
       getDefaultAddress() ||
       {};
@@ -136,6 +139,73 @@ export default function Cart() {
       pincode:
         saved.pincode,
     });
+
+    if (isAuthenticated) {
+      try {
+        const billing =
+          user?.billingAddress || {};
+
+        await axiosClient.put("/auth/customer/me", {
+          firstName:
+            billing.firstName ||
+            user?.firstName ||
+            existing.firstName ||
+            "",
+
+          lastName:
+            billing.lastName ||
+            user?.lastName ||
+            existing.lastName ||
+            "",
+
+          email:
+            billing.email ||
+            user?.email ||
+            existing.email ||
+            "",
+
+          billingAddress: {
+            ...billing,
+            firstName:
+              billing.firstName ||
+              user?.firstName ||
+              existing.firstName ||
+              "",
+            lastName:
+              billing.lastName ||
+              user?.lastName ||
+              existing.lastName ||
+              "",
+            email:
+              billing.email ||
+              user?.email ||
+              existing.email ||
+              "",
+            phone: billing.phone || existing.phone || "",
+            address1: billing.address1 || existing.address || "",
+            address2: billing.address2 || existing.address2 || "",
+            city: saved.city || billing.city || "",
+            state: saved.state || billing.state || "Telangana",
+            postcode: saved.pincode || billing.postcode || "",
+            country: "IN",
+            studentClass:
+              billing.studentClass ||
+              existing.studentClass ||
+              "Nursery",
+            admissionNo:
+              billing.admissionNo ||
+              existing.admissionNo ||
+              "",
+            parentName:
+              billing.parentName ||
+              existing.parentName ||
+              "",
+          },
+        });
+      } catch (error) {
+        console.error("Unable to sync cart address to profile:", error);
+      }
+    }
 
     setAddressOpen(false);
   };

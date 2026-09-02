@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -9,6 +9,7 @@ import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
+import PayForOrder from "./pages/PayForOrder";
 import Account from "./pages/Account";
 import ForgotPassword from "./pages/ForgotPassword";
 import SetPassword from "./pages/SetPassword";
@@ -19,6 +20,16 @@ import RefundPolicy from "./pages/RefundPolicy";
 import ShippingPolicy from "./pages/ShippingPolicy";
 import CancellationPolicy from "./pages/CancellationPolicy";
 import OrderTracking from "./pages/OrderTracking";
+
+function OrderProfileRedirect() {
+  const { orderId } = useParams();
+  return (
+    <Navigate
+      to={`/profile?tab=orders&orderId=${orderId}`}
+      replace
+    />
+  );
+}
 
 function AppShell() {
   const { isAuthenticated } = useAuth();
@@ -64,6 +75,8 @@ function AppShell() {
         <Route path="/products/:id" element={<ProductDetails requireAuth={requireAuth} />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/pay-for-order/:orderId" element={<PayForOrder />} />
+        <Route path="/order/:orderId" element={<OrderProfileRedirect />} />
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/order-tracking/:orderId" element={<OrderTracking />} />
         <Route path="/profile" element={<Account />} />

@@ -28,6 +28,7 @@ import {
 } from "../context/AuthContext";
 
 import AddressForm from "../components/AddressForm";
+import OrderDetailPanel from "../components/OrderDetailPanel";
 
 import axiosClient from "../api/axiosClient";
 
@@ -1330,7 +1331,7 @@ export default function Profile() {
       }
 
       navigate(
-        `/pay-for-order/${orderId}`
+        `/pay-for-order/${orderId}?source=orders`
       );
     };
 
@@ -1351,9 +1352,15 @@ export default function Profile() {
         return;
       }
 
-      navigate(
-        `/order/${orderId}`
-      );
+      setSearchParams({
+        tab: "orders",
+        orderId: String(orderId),
+      });
+    };
+
+  const closeOrderView =
+    () => {
+      setSearchParams({ tab: "orders" });
     };
 
   /* =======================================================
@@ -1535,6 +1542,29 @@ export default function Profile() {
 
   const renderOrders =
     () => {
+      const viewingOrderId =
+        searchParams.get(
+          "orderId"
+        );
+
+      if (
+        viewingOrderId
+      ) {
+        return (
+          <OrderDetailPanel
+            orderId={
+              viewingOrderId
+            }
+            onBack={
+              closeOrderView
+            }
+            onPay={
+              payOrder
+            }
+          />
+        );
+      }
+
       if (
         ordersLoading
       ) {
@@ -1724,7 +1754,7 @@ export default function Profile() {
                             }
                             className="
                               font-bold
-                              text-[#ff7900]
+                              text-[#D9A537]
                               hover:underline
                             "
                           >
@@ -1820,17 +1850,15 @@ export default function Profile() {
                                   )
                                 }
                                 className="
+                                  btn-gold
                                   inline-flex
                                   items-center
                                   gap-1.5
-                                  bg-[#ff7900]
+                                  rounded-sm
                                   px-3
                                   py-2
                                   text-xs
                                   font-bold
-                                  text-white
-                                  transition
-                                  hover:bg-[#e96f00]
                                 "
                               >
                                 <CreditCard
@@ -1853,17 +1881,15 @@ export default function Profile() {
                                 )
                               }
                               className="
+                                btn-gold
                                 inline-flex
                                 items-center
                                 gap-1.5
-                                bg-[#ff7900]
+                                rounded-sm
                                 px-3
                                 py-2
                                 text-xs
                                 font-bold
-                                text-white
-                                transition
-                                hover:bg-[#e96f00]
                               "
                             >
                               View
@@ -1889,17 +1915,15 @@ export default function Profile() {
                                   )
                                 }
                                 className="
+                                  btn-gold
                                   inline-flex
                                   items-center
                                   gap-1.5
-                                  bg-[#ff7900]
+                                  rounded-sm
                                   px-3
                                   py-2
                                   text-xs
                                   font-bold
-                                  text-white
-                                  transition
-                                  hover:bg-[#e96f00]
                                   disabled:cursor-not-allowed
                                   disabled:opacity-60
                                 "
@@ -2179,7 +2203,7 @@ export default function Profile() {
                   gap-2
                   text-sm
                   font-medium
-                  text-[#ff7900]
+                  text-[#D9A537]
                   hover:underline
                 "
               >
@@ -2875,11 +2899,19 @@ export default function Profile() {
                 text-[#243346]
               ">
                 {
-                  navItems.find(
-                    (item) =>
-                      item.id ===
-                      activeTab
-                  )?.label
+                  searchParams.get(
+                    "orderId"
+                  ) &&
+                  activeTab ===
+                    "orders"
+                    ? `Order #${searchParams.get(
+                        "orderId"
+                      )}`
+                    : navItems.find(
+                        (item) =>
+                          item.id ===
+                          activeTab
+                      )?.label
                 }
               </span>
             </>

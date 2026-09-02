@@ -14,9 +14,19 @@ import AddressForm from "../components/AddressForm";
 
 import {
   EMPTY_ADDRESS,
+  getDefaultAddress,
 } from "../utils/addressStorage";
 
+import {
+  loadCheckoutDraft,
+  saveCheckoutDraft,
+} from "../utils/checkoutDraft";
+
 import axiosClient from "../api/axiosClient";
+
+import {
+  payOrderWithPaytm,
+} from "../services/paymentService";
 
 /* =========================================================
    REQUIRED FIELD LABELS
@@ -340,30 +350,54 @@ export default function Checkout() {
   ======================================================= */
 
   useEffect(() => {
-    if (
-      isAuthenticated
-    ) {
+    const draft = loadCheckoutDraft();
+
+    if (draft?.form) {
+      setForm((previous) => ({
+        ...previous,
+        ...draft.form,
+      }));
+
+      if (draft.notes) {
+        setNotes(draft.notes);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (loadCheckoutDraft()?.form) {
+      return;
+    }
+
+    if (isAuthenticated) {
       loadCustomerDetails();
 
-      /*
-       * Logged-in customer should
-       * never see Create Account Password.
-       */
-      setAccountPassword(
-        ""
-      );
+      setAccountPassword("");
+      setShowAccountPassword(false);
+      setShowCheckoutLogin(false);
+      setCheckoutError("");
+      return;
+    }
 
-      setShowAccountPassword(
-        false
-      );
+    const savedAddress = getDefaultAddress();
 
-      setShowCheckoutLogin(
-        false
-      );
-
-      setCheckoutError(
-        ""
-      );
+    if (savedAddress) {
+      setForm((previous) => ({
+        ...previous,
+        firstName: savedAddress.firstName || previous.firstName,
+        lastName: savedAddress.lastName || previous.lastName,
+        email: savedAddress.email || previous.email,
+        phone: savedAddress.phone || previous.phone,
+        address: savedAddress.address || previous.address,
+        address2: savedAddress.address2 || previous.address2,
+        city: savedAddress.city || previous.city,
+        state: savedAddress.state || previous.state || "Telangana",
+        pincode: savedAddress.pincode || previous.pincode,
+        country: savedAddress.country || previous.country || "India",
+        studentClass: savedAddress.studentClass || previous.studentClass || "Nursery",
+        admissionNo: savedAddress.admissionNo || previous.admissionNo,
+        parentName: savedAddress.parentName || previous.parentName,
+      }));
     }
   }, [isAuthenticated]);
 
@@ -1098,14 +1132,39 @@ export default function Checkout() {
          * There Pay Now button should
          * open Paytm gateway.
          */
-        navigate(
-          `/pay-for-order/${orderId}`,
-          {
-            state: {
-              order,
+        saveCheckoutDraft({
+          form,
+          notes,
+        });
+
+        await clearCart();
+
+        const goToPayPage = () => {
+          navigate(
+            `/pay-for-order/${orderId}?source=checkout`,
+            {
+              replace: true,
+              state: { order },
+            }
+          );
+        };
+
+        try {
+          await payOrderWithPaytm(orderId, {
+            onSuccess: async () => {
+              clearCheckoutDraft();
+              navigate(
+                `/order-success?orderId=${orderId}`,
+                { replace: true }
+              );
             },
-          }
-        );
+            onFailure: () => {
+              goToPayPage();
+            },
+          });
+        } catch {
+          goToPayPage();
+        }
       } catch (error) {
         console.error(
           "Checkout error:",

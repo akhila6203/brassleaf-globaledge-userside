@@ -1,47 +1,37 @@
 import axiosClient from "../api/axiosClient";
-import API_ENDPOINTS from "../api/endpoints";
 
-/* =====================================================
-   GET ORDERS
-===================================================== */
+export const CUSTOMER_ORDERS = "/customer/orders";
 
-export const getOrders = async (params = {}) => {
-  try {
-    const response = await axiosClient.get(
-      API_ENDPOINTS.ORDERS,
-      {
-        params,
-      }
-    );
+export async function fetchCustomerOrders() {
+  const { data } = await axiosClient.get(CUSTOMER_ORDERS);
+  return data?.orders || data?.items || [];
+}
 
-    return response.data;
-  } catch (error) {
-    console.error(
-      "getOrders service error:",
-      error
-    );
+export async function fetchCustomerOrder(orderId) {
+  const { data } = await axiosClient.get(`${CUSTOMER_ORDERS}/${orderId}`);
+  return data?.order || data;
+}
 
-    throw error;
-  }
-};
+export async function createCustomerOrder(payload) {
+  const { data } = await axiosClient.post(CUSTOMER_ORDERS, payload);
+  return data?.order || data;
+}
 
-/* =====================================================
-   GET SINGLE ORDER
-===================================================== */
+export async function cancelCustomerOrder(orderId) {
+  const { data } = await axiosClient.post(
+    `${CUSTOMER_ORDERS}/${orderId}/cancel`
+  );
+  return data?.order || data;
+}
 
-export const getOrderById = async (id) => {
-  try {
-    const response = await axiosClient.get(
-      API_ENDPOINTS.ORDER_BY_ID(id)
-    );
+export async function initiateOrderPayment(orderId) {
+  const { data } = await axiosClient.post(
+    `${CUSTOMER_ORDERS}/${orderId}/payment/initiate`
+  );
+  return data?.payment || data;
+}
 
-    return response.data;
-  } catch (error) {
-    console.error(
-      "getOrderById service error:",
-      error
-    );
-
-    throw error;
-  }
-};
+export async function fetchPaytmConfig() {
+  const { data } = await axiosClient.get("/customer/payments/paytm/config");
+  return data;
+}
