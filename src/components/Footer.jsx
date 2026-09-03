@@ -90,7 +90,9 @@ export default function Footer() {
             </div> */}
             <div className="flex gap-3">
               <MapPin size={19} className="mt-0.5 shrink-0 text-[#D9A537]" />
-              <span className="leading-6">6-3-666/B, Pillar No. #1118, Panjagutta, Hyderabad – 500082, Opp. Nims Hospital.</span>
+              <span className="leading-6">
+6-3-666/B, Pillar No. #1118 Erramanjil Road, Panjagutta, Hyderabad – 500082, Opp Nims Hospital
+                </span>
             </div>
           </div>
         </div>

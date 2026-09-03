@@ -11,9 +11,15 @@ export default function SizeSelectModal({
 }) {
   if (!open || !product || !product.sizes?.length) return null;
 
-  const variationFor = (item) =>
-    product.variations?.find((variation) => variation.size === item);
-
+  // const variationFor = (item) =>
+  //   product.variations?.find((variation) => variation.size === item);
+ const variationFor = (item) =>
+    product.variations?.find(
+      (variation) =>
+        String(variation.size) ===
+        String(item)
+    );
+    
   return (
     <div className="fixed inset-0 z-[80] grid place-items-center bg-[#243346]/60 px-4 backdrop-blur-sm">
       <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
@@ -30,7 +36,10 @@ export default function SizeSelectModal({
         <p className="mt-5 text-sm text-slate-500">Please select a size before continuing.</p>
 
         <div className="mt-4 grid grid-cols-4 gap-2">
-          {product.sizes.map((item) => {
+          {/* {product.sizes.map((item) => { */}
+          {[...product.sizes]
+            .sort((a, b) => Number(a) - Number(b))
+            .map((item) => {
             const variation = variationFor(item);
             const unavailable = variation?.stockStatus === "outofstock";
             return (
