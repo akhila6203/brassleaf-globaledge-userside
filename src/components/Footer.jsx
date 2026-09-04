@@ -70,15 +70,7 @@ export default function Footer() {
         <div>
           <h3 className="mb-5 text-lg font-bold text-[#D9A537]">Contact Us</h3>
           <div className="space-y-5 text-[15px] text-slate-300">
-            <div className="flex gap-3">
-              <Phone size={19} className="mt-0.5 shrink-0 text-[#D9A537]" />
-              <a
-                href="tel:+919876543210"
-                className="transition hover:text-white"
-              >
-                +91 99999 99999
-              </a>
-            </div>
+            
             {/* <div className="flex gap-3">
               <Mail size={19} className="mt-0.5 shrink-0 text-[#D9A537]" />
               <a
@@ -94,12 +86,47 @@ export default function Footer() {
 6-3-666/B, Pillar No. #1118 Erramanjil Road, Panjagutta, Hyderabad – 500082, Opp Nims Hospital
                 </span>
             </div>
+            <div className="flex gap-3">
+              <Phone size={19} className="mt-0.5 shrink-0 text-[#D9A537]" />
+              <a
+                href="tel:+919876543210"
+                className="transition hover:text-white"
+              >
+                +91 6302-099299
+              </a>
+            </div>
           </div>
         </div>
       </div>
-      <div className="border-t border-white/10 py-5 text-center text-sm text-slate-400">
+      {/* <div className="border-t border-white/10 py-5 text-center text-sm text-slate-400">
         © 2026 Brass Leaf Uniforms. All Rights Reserved.
-      </div>
+      </div> */}
+      <div className="border-t border-white/10">
+  <div className="container-site flex flex-col gap-3 py-5 text-sm text-slate-300 md:flex-row md:items-center md:justify-between">
+
+    {/* Copyright */}
+    <p className="text-center md:text-left">
+      Copyright © 2026 BrassLeaf - All Rights Reserved.
+    </p>
+
+    {/* Terms & Conditions */}
+    <p className="text-center md:text-right">
+      <span className="font-medium text-white">
+        TERMS &amp; CONDITIONS:
+      </span>{" "}
+      Please refer to{" "}
+      <a
+        href="https://brassleaf.store"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-medium text-[#D9A537] transition hover:text-white"
+      >
+        https://brassleaf.store
+      </a>
+    </p>
+
+  </div>
+</div>
     </footer>
   );
 }
