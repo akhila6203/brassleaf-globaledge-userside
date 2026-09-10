@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useMemo, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { useProducts } from "../hooks/useProducts";
+import { sortProductsByUniformOrder } from "../utils/productOrder";
 
 const SORT_OPTIONS = [
   { value: "default", label: "Default sorting", sort: "date", dir: "desc" },
@@ -26,12 +27,53 @@ export default function Collections({ requireAuth }) {
     dir: selectedSort.dir,
   });
 
+  // const visibleProducts = useMemo(() => {
+  //   if (sortValue !== "rating") return products;
+  //   return [...products].sort(
+  //     (a, b) => Number(b.averageRating || 0) - Number(a.averageRating || 0)
+  //   );
+  // }, [products, sortValue]);
   const visibleProducts = useMemo(() => {
-    if (sortValue !== "rating") return products;
-    return [...products].sort(
-      (a, b) => Number(b.averageRating || 0) - Number(a.averageRating || 0)
+
+  /* =====================================================
+     DEFAULT = OUR CUSTOM UNIFORM ORDER
+  ===================================================== */
+
+  if (sortValue === "default") {
+    return sortProductsByUniformOrder(
+      products
     );
-  }, [products, sortValue]);
+  }
+
+
+  /* =====================================================
+     RATING SORT
+  ===================================================== */
+
+  if (sortValue === "rating") {
+    return [...products].sort(
+      (a, b) =>
+        Number(
+          b.averageRating || 0
+        ) -
+        Number(
+          a.averageRating || 0
+        )
+    );
+  }
+
+
+  /*
+    Popularity / Latest / Price
+    continue using existing backend sorting.
+  */
+
+  return products;
+
+}, [
+  products,
+  sortValue,
+]);
 
   return (
     <main className="min-h-[70vh] bg-white">

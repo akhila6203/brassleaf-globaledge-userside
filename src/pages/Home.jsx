@@ -1,9 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import ProductCard from "../components/ProductCard";
 import { usePaginatedProducts } from "../hooks/useProducts";
+import {
+  sortProductsByUniformOrder,
+} from "../utils/productOrder";
 
 export default function Home() {
   const { products, loading, error, hasMore, loadMore } = usePaginatedProducts({ sort: "date", dir: "desc" }, 24);
+
+  const orderedProducts = useMemo(
+    () =>
+      sortProductsByUniformOrder(
+        products
+      ),
+    [products]
+  );
 
   useEffect(() => {
     if (!loading && hasMore) loadMore();
@@ -22,7 +33,15 @@ export default function Home() {
         ) : (
           <>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 lg:gap-5">
-              {products.map((product) => <ProductCard key={product.id} product={product} />)}
+               {orderedProducts.map(
+                (product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                  />
+                )
+              )}
+              {/* {products.map((product) => <ProductCard key={product.id} product={product} />)} */}
             </div>
             {loading && <div className="flex justify-center py-8"><div className="h-8 w-8 animate-spin rounded-full border-4 border-[#D9A537] border-t-transparent" /></div>}
           </>
