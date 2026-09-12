@@ -8,6 +8,7 @@ export default function Footer() {
         <div>
           <img
             src="/logo3.jpg"
+            // src={$`{import.meta.env.BASE_URL}logo3.jpg`}
             alt="Brass Leaf Uniforms"
             className="mb-5 h-20 w-54 rounded-lg p-1"
           />

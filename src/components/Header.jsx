@@ -146,6 +146,7 @@ export default function Header({
             >
               <img
                 src="/logo3.jpg"
+                // src={$`{import.meta.env.BASE_URL}logo3.jpg`}
                 alt="School Uniforms"
                 className="
                   h-9
